@@ -13,6 +13,13 @@ import { authFormSchema } from "@/lib/Validations";
 import { toast } from "sonner";
 import FormInput from "./FormInput";
 import { useRouter } from "next/navigation";
+import {
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "@/firebase/client";
+import { signIn, signUp } from "@/lib/actions/auth.action";
+import Spinner from "./Spinner";
 
 const AuthForm = ({ type }: { type: FormType }) => {
 	const router = useRouter();
@@ -27,18 +34,59 @@ const AuthForm = ({ type }: { type: FormType }) => {
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	const {
+		control,
+		handleSubmit,
+		formState: { isSubmitting },
+	} = form;
+
+	async function onSubmit(data: z.infer<typeof formSchema>) {
 		try {
 			if (type === "sign-up") {
+				const { name, email, password } = data;
+
+				const userCredentials = await createUserWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+
+				const result = await signUp({
+					uid: userCredentials.user.uid,
+					name: name!,
+					email,
+					password,
+				});
+
+				if (!result?.success) {
+					toast.error(result?.message);
+					return;
+				}
+
 				toast.success("Account created successfully. Please sign in");
 				router.push("/sign-in");
 			} else {
+				const { email, password } = data;
+				const userCredentials = await signInWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+
+				const idToken = await userCredentials.user.getIdToken();
+
+				if (!idToken) {
+					toast.error("Sign in failed. Please try again.");
+					return;
+				}
+
+				await signIn({ email, idToken });
 				toast.success("Sign in successfully.");
 				router.push("/");
 			}
-		} catch (error) {
-			console.error(error);
-			toast.error(`Something went wrong: ${error}`);
+		} catch (e: any) {
+			console.error(e.code);
+			toast.error(`Something went wrong: ${e.message}`);
 		}
 	}
 
@@ -55,33 +103,37 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
 				<Form {...form}>
 					<form
-						onSubmit={form.handleSubmit(onSubmit)}
+						onSubmit={handleSubmit(onSubmit)}
 						className="w-full space-y-6 mt-4 form"
 					>
 						{!isSignIn && (
 							<FormInput
-								control={form.control}
+								control={control}
 								name="name"
 								label="Name"
 								placeholder="Your Name"
 							/>
 						)}
 						<FormInput
-							control={form.control}
+							control={control}
 							name="email"
 							label="Email"
 							placeholder="Your email address"
 							type="email"
 						/>
 						<FormInput
-							control={form.control}
+							control={control}
 							name="password"
 							label="Password"
 							placeholder="Enter your password"
 							type="password"
 						/>
 						<Button className="btn" type="submit">
-							{isSignIn ? "Sign in" : "Create an Account"}
+							{isSubmitting ? (
+								<Spinner />
+							) : (
+								<span>{isSignIn ? "Sign in" : "Create an Account"}</span>
+							)}
 						</Button>
 					</form>
 				</Form>
