@@ -5,16 +5,18 @@ import {
 	getInterviewsByUserId,
 	getLatestInterviews,
 } from "@/lib/actions/general.action";
+
 import Image from "next/image";
 import Link from "next/link";
 
 const Page = async () => {
 	const user = await getCurrentUser();
+	const userId = user?.id || "";
 
 	// PARALLEL REQUEST
 	const [userInterviews, latestInterviews] = await Promise.all([
-		await getInterviewsByUserId(user?.id!),
-		await getLatestInterviews({ userId: user?.id! }),
+		await getInterviewsByUserId(userId),
+		await getLatestInterviews({ userId: userId }),
 	]);
 
 	const hasPastInterviews = userInterviews ? userInterviews?.length > 0 : null;
@@ -24,7 +26,7 @@ const Page = async () => {
 
 	return (
 		<>
-			<section className="card-cta ">
+			<section className="card-cta selection:bg-slate-300 selection:text-slate-900">
 				<div className="flex flex-col gap-6 max-w-lg  ">
 					<h2>Get Interview-Ready with Ai-Powered Practice & Feedback</h2>
 					<p className="text-lg">

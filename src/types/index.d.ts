@@ -1,6 +1,7 @@
 interface Feedback {
 	id: string;
 	interviewId: string;
+	interviewRole: string;
 	totalScore: number;
 	categoryScores: Array<{
 		name: string;
@@ -24,9 +25,14 @@ interface Interview {
 	type: string;
 	finalized: boolean;
 }
+interface HowItWorks {
+	title: string;
+	text: string;
+}
 
 interface CreateFeedbackParams {
 	interviewId: string;
+	interviewRole: string;
 	userId: string;
 	transcript: { role: string; content: string }[];
 	feedbackId?: string;
@@ -51,6 +57,7 @@ interface AgentProps {
 	userName: string;
 	userId?: string;
 	interviewId?: string;
+	interviewRole?: string;
 	feedbackId?: string;
 	type: "generate" | "interview";
 	questions?: string[];

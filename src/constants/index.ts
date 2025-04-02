@@ -238,3 +238,34 @@ export const dummyInterviews: Interview[] = [
 		createdAt: "2024-03-14T15:30:00Z",
 	},
 ];
+
+export const HowItWorks: HowItWorks[] = [
+	{
+		title: "Generate Your Interview",
+		text: "Choose the type of interview you’d like to practice – from technical assessments to HR interviews",
+	},
+	{
+		title: "Interview with the AI Agent",
+		text: "Engage with PrePpy’s intelligent AI agent, who will guide you through a realistic interview scenario, asking tailored questions and assessing your responses.",
+	},
+
+	{
+		title: "Receive Feedback & Performance Scores",
+		text: "After your interview, you’ll get in-depth feedback and performance scores. PrePpy evaluates your answers, helping you pinpoint areas for improvement, so you can refine your approach and boost your confidence",
+	},
+];
+export const WhatWeOffer: HowItWorks[] = [
+	{
+		title: "AI-Powered Interview Simulations",
+		text: "Generate interviews with an intelligent AI agent that mimics real-world scenarios. From technical questions to behavioral interviews, our agent adapts to your specific role, industry, and needs.",
+	},
+	{
+		title: "Instant Performance Feedback",
+		text: "After each interview, PrePpy provides detailed feedback and performance scores. Our system evaluates your answers, communication style, and overall presentation to help you improve and build confidence.",
+	},
+
+	{
+		title: "Customizable Experience",
+		text: "Whether you're preparing for a particular job role, industry, or interview type, PrePpy lets you tailor your practice sessions to match your goals. You can even simulate multiple rounds of interviews to ensure you’re fully prepared.",
+	},
+];

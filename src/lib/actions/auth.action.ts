@@ -29,10 +29,13 @@ export async function signUp(params: SignUpParams) {
 			success: true,
 			message: "Account created successfully. Please sign in.",
 		};
-	} catch (error: any) {
-		console.error("Error creating user:", error);
+	} catch (e: unknown) {
+		console.error("Error creating user:", e);
 
-		if (error.code === "auth/email-alreay-exists") {
+		if (
+			e instanceof Error &&
+			(e as { code?: string }).code === "auth/email-alreay-in-use"
+		) {
 			return {
 				success: false,
 				message: "This email is already in use.",
@@ -58,7 +61,7 @@ export async function signIn(params: SignInParams) {
 		}
 
 		await setSessionCookie(idToken);
-	} catch (error: any) {
+	} catch (error) {
 		console.error("Error creating user:", error);
 		return {
 			success: false,
@@ -85,15 +88,15 @@ export async function setSessionCookie(idToken: string) {
 
 export async function getCurrentUser(): Promise<User | null> {
 	const cookieStore = await cookies();
-	const sessionCookie = cookieStore.get("session")?.value || null;
+	const sessionCookie = cookieStore.get("session")?.value;
 	if (!sessionCookie) return null;
 
 	try {
 		const decodedClaims = await auth.verifySessionCookie(sessionCookie, true);
-		const { uid } = decodedClaims;
+		// const { uid } = decodedClaims;
 		const userRecord = await db
 			.collection("users")
-			.doc(decodedClaims.uid)
+			.doc(decodedClaims?.uid)
 			.get();
 		if (!userRecord.exists) return null;
 
@@ -101,7 +104,7 @@ export async function getCurrentUser(): Promise<User | null> {
 			...userRecord.data(),
 			id: userRecord.id,
 		} as User;
-	} catch (e: any) {
+	} catch (e) {
 		console.error("Error getting user:", e);
 		return null;
 	}
@@ -110,4 +113,8 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function isAuthenticated() {
 	const user = await getCurrentUser();
 	return !!user;
+}
+export async function logUserOut() {
+	const cookieStore = await cookies();
+	cookieStore.delete("session");
 }

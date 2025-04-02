@@ -1,5 +1,6 @@
 "use client";
 import { interviewer } from "@/constants";
+import { createFeedback } from "@/lib/actions/general.action";
 import { cn } from "@/lib/utils";
 import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
@@ -23,6 +24,7 @@ const Agent = ({
 	userId,
 	type,
 	interviewId,
+	interviewRole,
 	questions,
 }: AgentProps) => {
 	const router = useRouter();
@@ -68,10 +70,12 @@ const Agent = ({
 		console.log("Generate feedback here.");
 
 		// TODO: Create a server action that generates feedback
-		const { success, id } = {
-			success: true,
-			id: "feedback-id",
-		};
+		const { success, feedbackId: id } = await createFeedback({
+			interviewId: interviewId!,
+			interviewRole: interviewRole!,
+			userId: userId!,
+			transcript: messages,
+		});
 
 		if (success && id) {
 			router.push(`/interview/${interviewId}/feedback`);
@@ -150,7 +154,7 @@ const Agent = ({
 							height={540}
 							className="object-cover rounded-full size-[7.5rem] "
 						/>
-						<h3>{userName}</h3>
+						<h3>{userName}(You)</h3>
 					</div>
 				</div>
 			</div>
@@ -171,7 +175,7 @@ const Agent = ({
 				</div>
 			)}
 
-			<div className="w-full flex justify-center">
+			<div className="w-full flex justify-center mt-5">
 				{callStatus !== "ACTIVE" ? (
 					<button className="relative btn-call" onClick={handleCall}>
 						<span

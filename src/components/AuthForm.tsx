@@ -84,9 +84,14 @@ const AuthForm = ({ type }: { type: FormType }) => {
 				toast.success("Sign in successfully.");
 				router.push("/");
 			}
-		} catch (e: any) {
-			console.error(e.code);
-			toast.error(`Something went wrong: ${e.message}`);
+		} catch (e: unknown) {
+			if (e instanceof Error) {
+				console.error(e.message);
+				toast.error(`Something went wrong: ${e.message}`);
+			} else {
+				console.error("An unknown error occurred.");
+				toast.error("Something went wrong.");
+			}
 		}
 	}
 

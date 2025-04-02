@@ -45,3 +45,13 @@ export const getRandomInterviewCover = () => {
 	const randomIndex = Math.floor(Math.random() * interviewCovers.length);
 	return `/covers${interviewCovers[randomIndex]}`;
 };
+
+// export const useScrollToTop = () => {
+// 	useEffect(() => {
+// 		// Scroll to the top of the component
+// 		window.scrollTo({
+// 			top: 0,
+// 			behavior: "smooth",
+// 		});
+// 	}, []);
+// };

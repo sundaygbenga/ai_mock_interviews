@@ -25,6 +25,26 @@
 	--font-mona-sans: "Mona Sans", sans-serif;
 
 	--bg-pattern: url("/pattern.png");
+	--animate-bounceIn: bounceIn 2.5s ease-in-out;
+
+	@keyframes bounceIn {
+		0% {
+			transform: translateY(-100%);
+			animation-timing-function: ease-in;
+		}
+		60% {
+			transform: translateY(20%);
+			animation-timing-function: ease-out;
+		}
+		80% {
+			transform: translateY(-10%);
+			animation-timing-function: ease-in;
+		}
+		100% {
+			transform: translateY(0%);
+			animation-timing-function: ease-out;
+		}
+	}
 }
 
 :root {
@@ -154,11 +174,51 @@
 		@apply list-disc list-inside;
 	}
 	li {
-		@apply text-light-100;
+		@apply text-light-100 list-none;
+	}
+
+	/* Global Scrollbar Styles */
+	* {
+		scrollbar-width: auto; /* Firefox */
+		scrollbar-color: gray transparent;
+	}
+
+	/* WebKit Browsers (Chrome, Edge, Safari) */
+	*::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background: gray;
+		border-radius: 10px;
+	}
+
+	*::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	*::-webkit-scrollbar-button {
+		display: block;
+		background: gray;
+		border-radius: 50%;
+		height: 10px;
+		width: 10px;
+	}
+
+	.hide-scrollbar {
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+
+	.hide-scrollbar::-webkit-scrollbar {
+		display: none;
 	}
 }
 
 @layer components {
+	.btn {
+		@apply !w-full !bg-primary-200 !text-dark-100 hover:!bg-primary-200/80 !rounded-full !min-h-10 !font-bold !px-5 cursor-pointer;
+	}
 	.btn-call {
 		@apply inline-block px-7 py-3 font-bold text-sm leading-5 text-white transition-colors duration-150 bg-success-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:bg-success-200 hover:bg-success-200 min-w-28 cursor-pointer items-center justify-center overflow-visible;
 
@@ -321,6 +381,9 @@
 @utility animate-fadeIn {
 	animation: fadeIn 0.3s ease-in-out;
 }
+/* @utility animate-bounceIn {
+	animation: bounceIn 2.5s ease-in-out;
+} */
 
 @keyframes fadeIn {
 	from {
@@ -332,3 +395,22 @@
 		transform: translateY(0);
 	}
 }
+
+/* @keyframes bounceIn {
+	0% {
+		transform: translateY(-100%);
+		animation-timing-function: ease-in;
+	}
+	60% {
+		transform: translateY(20%);
+		animation-timing-function: ease-out;
+	}
+	80% {
+		transform: translateY(-10%);
+		animation-timing-function: ease-in;
+	}
+	100% {
+		transform: translateY(0%);
+		animation-timing-function: ease-out;
+	}
+} */
