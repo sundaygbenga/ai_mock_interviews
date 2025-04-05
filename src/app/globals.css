@@ -230,6 +230,9 @@
 	.btn-disconnect {
 		@apply inline-block px-7 py-3 text-sm font-bold leading-5 text-white transition-colors duration-150 bg-destructive-100 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:bg-destructive-200 hover:bg-destructive-200 min-w-28;
 	}
+	.btn-restart {
+		@apply inline-block px-7 py-3 text-sm font-bold leading-5 text-white transition-colors duration-150 !bg-dark-200 border border-transparent rounded-full shadow-sm focus:outline-none focus:shadow-2xl active:!bg-dark-200 hover:!bg-dark-200/80 min-w-28;
+	}
 
 	.btn-upload {
 		@apply flex min-h-14 w-full items-center justify-center gap-1.5 rounded-md;
@@ -277,11 +280,11 @@
 		}
 
 		.card-interviewer {
-			@apply flex-center flex-col gap-2 p-7 h-[400px] blue-gradient-dark rounded-lg border-2 border-primary-200/50 flex-1 sm:basis-1/2 w-full;
+			@apply flex-center flex-col gap-2 p-7 h-[25rem] blue-gradient-dark rounded-lg border-2 border-primary-200/50 flex-1 sm:basis-1/2 w-full;
 		}
 
 		.avatar {
-			@apply z-10 flex items-center justify-center blue-gradient rounded-full size-[120px] relative;
+			@apply z-10 flex items-center justify-center blue-gradient rounded-full size-[7.5rem] relative;
 
 			.animate-speak {
 				@apply absolute inline-flex size-5/6 animate-ping rounded-full bg-primary-200 opacity-75;
@@ -289,7 +292,7 @@
 		}
 
 		.card-border {
-			@apply border-gradient p-0.5 rounded-2xl flex-1 sm:basis-1/2 w-full h-[400px] max-md:hidden;
+			@apply border-gradient p-0.5 rounded-2xl flex-1 sm:basis-1/2 w-full h-[25rem] max-md:hidden;
 		}
 
 		.card-content {
@@ -351,6 +354,126 @@
 		.badge-text {
 			@apply text-sm font-semibold capitalize;
 		}
+	}
+
+	.actions {
+		position: absolute;
+		z-index: 1;
+		bottom: -30px;
+
+		right: 0;
+		display: flex;
+		justify-content: flex-end;
+		& img {
+			height: 4rem;
+		}
+
+		.review {
+			--tw-ring-offset-shadow: 0 0 #0000;
+			--tw-ring-shadow: 0 0 #0000;
+			--tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+				0 4px 6px -4px rgb(0 0 0 / 0.1);
+			cursor: pointer;
+			background-color: rgb(255 202 40);
+			border-radius: 0.75rem;
+			box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+				var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+		}
+
+		.add {
+			--tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+				0 4px 6px -4px rgb(0 0 0 / 0.1);
+			--tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color),
+				0 4px 6px -4px var(--tw-shadow-color);
+			box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+				var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+			background-color: rgb(255 143 0);
+			border-radius: 9999px;
+			cursor: pointer;
+			height: 4rem;
+		}
+
+		.add input {
+			display: none;
+		}
+
+		:where(.review, .add) {
+			margin: 0 30px;
+		}
+	}
+
+	/* JUMP LOADING EFFECT */
+	/* JUMP */
+	.bounce {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 20px;
+		width: 100%;
+		height: 100%;
+		cursor: default;
+		margin: auto;
+		display: block;
+		text-align: center;
+	}
+
+	.bounce span {
+		position: relative;
+		top: 0;
+		display: inline-block;
+		-webkit-animation: bounce 0.3s ease infinite alternate;
+		animation: bounce 0.3s ease infinite alternate;
+		font-size: 40px;
+		color: #fff;
+		text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 0 3px 0 #ccc, 0 4px 0 #ccc,
+			0 5px 0 #ccc, 0 6px 0 transparent, 0 7px 0 transparent,
+			0 8px 0 transparent, 0 9px 0 transparent, 0 10px 10px rgba(0, 0, 0, 0.4);
+	}
+
+	.bounce span:nth-child(2) {
+		-webkit-animation-delay: 0.1s;
+		animation-delay: 0.1s;
+	}
+
+	.bounce span:nth-child(3) {
+		-webkit-animation-delay: 0.2s;
+		animation-delay: 0.2s;
+	}
+
+	.bounce span:nth-child(4) {
+		-webkit-animation-delay: 0.3s;
+		animation-delay: 0.3s;
+	}
+
+	.bounce span:nth-child(5) {
+		-webkit-animation-delay: 0.4s;
+		animation-delay: 0.4s;
+	}
+
+	.bounce span:nth-child(6) {
+		-webkit-animation-delay: 0.5s;
+		animation-delay: 0.5s;
+	}
+
+	.bounce span:nth-child(7) {
+		-webkit-animation-delay: 0.6s;
+		animation-delay: 0.6s;
+	}
+
+	.bounce span:nth-child(8) {
+		-webkit-animation-delay: 0.2s;
+		animation-delay: 0.2s;
+	}
+
+	.bounce span:nth-child(9) {
+		-webkit-animation-delay: 0.3s;
+		animation-delay: 0.3s;
+	}
+
+	.bounce span:nth-child(10) {
+		-webkit-animation-delay: 0.4s;
+		animation-delay: 0.4s;
 	}
 }
 

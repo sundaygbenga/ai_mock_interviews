@@ -1,6 +1,7 @@
 import { interviewCovers, mappings } from "@/constants";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ZodIssue } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -44,6 +45,25 @@ export const getTechLogos = async (techArray: string[]) => {
 export const getRandomInterviewCover = () => {
 	const randomIndex = Math.floor(Math.random() * interviewCovers.length);
 	return `/covers${interviewCovers[randomIndex]}`;
+};
+
+export const removeLocalError = (
+	path: string,
+	state: ZodIssue[],
+	setState: React.Dispatch<React.SetStateAction<ZodIssue[]>>
+) => {
+	const filteredErrors = state?.filter((err) => err?.path[0] !== path);
+	if (filteredErrors) {
+		setState(filteredErrors);
+	}
+};
+
+export const assignLocalError = (path: string, state: ZodIssue[]) => {
+	const targetError = state?.find((err) => err?.path[0] === path);
+	if (targetError) {
+		return targetError?.message;
+	}
+	return null;
 };
 
 // export const useScrollToTop = () => {

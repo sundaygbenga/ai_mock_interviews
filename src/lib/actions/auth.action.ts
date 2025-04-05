@@ -1,6 +1,8 @@
 "use server";
 
-import { auth, db } from "@/firebase/admin";
+import { db, auth } from "@/firebase/admin";
+import { auth as clientAuth, db as clientDB } from "@/firebase/client";
+import { collection, doc, updateDoc } from "firebase/firestore";
 import { cookies } from "next/headers";
 
 // Session duration (1 week)
@@ -114,7 +116,30 @@ export async function isAuthenticated() {
 	const user = await getCurrentUser();
 	return !!user;
 }
+
+// export async function logUserOut() {
+// 	try {
+// 		return clientAuth.signOut();
+// 	} catch (error) {
+// 		console.error("Error signing out with Google", error);
+// 	}
+// }
 export async function logUserOut() {
 	const cookieStore = await cookies();
 	cookieStore.delete("session");
+}
+// export async function uploadProfileImage() {
+// 	const uploadTask = Storage.ref(`images/${image.name}`).put(image);
+// 	uploadTask.on("state_changed");
+// }
+export async function updateProfileImageReference(params: {
+	userId: string;
+	publicImageUrl: string;
+}) {
+	const { userId, publicImageUrl } = params;
+	console.log("IMAGE URL FROM ACTIONS:", publicImageUrl);
+	const userRef = doc(collection(clientDB, "users"), userId);
+	if (userRef) {
+		await updateDoc(userRef, { photo: publicImageUrl });
+	}
 }

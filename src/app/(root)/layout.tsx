@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import Link from "next/link";
-import Image from "next/image";
+
 import { isAuthenticated } from "@/lib/actions/auth.action";
 import { redirect } from "next/navigation";
 import Header from "@/components/Header";
@@ -23,7 +22,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
 				</div>
 			</nav> */}
 
-			<main className="mt-16 selection:bg-slate-300 selection:text-slate-900">
+			<main className="mt-[5rem]  selection:bg-slate-300 selection:text-slate-900">
 				{children}
 			</main>
 		</div>

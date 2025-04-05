@@ -78,6 +78,10 @@ interface GetLatestInterviewsParams {
 	limit?: number;
 }
 
+interface ProfileUploadParams {
+	image: file;
+	userId: string;
+}
 interface SignInParams {
 	email: string;
 	idToken: string;

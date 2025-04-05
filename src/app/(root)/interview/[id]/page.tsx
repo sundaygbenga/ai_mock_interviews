@@ -16,8 +16,8 @@ const Page = async ({ params }: RouteParams) => {
 
 	return (
 		<>
-			<div className="flex gap-4 justify-between">
-				<div className="flex flex-col sm:flex-row  gap-4 items-center">
+			<div className="flex md:gap-4 md:justify-between md:items-center">
+				<div className="flex flex-col md:flex-row w-full  gap-4 md:items-center">
 					<div className="flex gap-4 items-center">
 						<Image
 							src={getRandomInterviewCover()}
@@ -28,9 +28,15 @@ const Page = async ({ params }: RouteParams) => {
 						/>
 						<h3 className="capitalize">{interview.role} Interview</h3>
 					</div>
-					<DisplayTechIcons techStack={interview.techstack} />
+					<hr />
+					<div className="flex justify-between w-full items-center-">
+						<DisplayTechIcons techStack={interview.techstack} />
+						<p className="bg-dark-200 px-4 py-2 rounded-lg h-fit capitalize place-self-end md:hidden ">
+							{interview.type}
+						</p>
+					</div>
 				</div>
-				<p className="bg-dark-200 px-4 py-2 rounded-lg h-fit capitalize">
+				<p className="bg-dark-200 px-4 py-2 rounded-lg h-fit capitalize max-md:hidden">
 					{interview.type}
 				</p>
 			</div>

@@ -62,7 +62,7 @@ const Header = () => {
 	return (
 		<header
 			ref={ref}
-			className={`flex lg:shrink-0 max-lg:contents  top-0 left-0 right-0 shadow-sm shadow-accent-foreground transform transition-transform duration-700 ease-in-out w-full z-30 fixed dark-gradient md:opacity-90 items-center justify-center h-20  ${
+			className={`flex shrink-0 max-lg:contents-  top-0 left-0 right-0 shadow-sm shadow-accent-foreground transform transition-transform duration-700 ease-in-out w-full z-30 fixed dark-gradient md:opacity-90 items-center justify-center h-20  ${
 				isVisible && "fixed"
 			} ${isVisible ? "animate-bounceIn" : "translate-y-0"}`}
 		>
@@ -74,6 +74,14 @@ const Header = () => {
 					</Link>
 
 					<div className="flex gap-5 items-center">
+						<div className="relative h-10 w-10 rounded-full place-self-center- max-md:hidden mr-7">
+							<Image
+								src={"/profile.svg"}
+								alt="Upload profile"
+								className="object-fill rounded-full"
+								fill
+							/>
+						</div>
 						<Link href={"/interview"} className="cursor-pointer">
 							<Button className="max-md:hidden px-5 py-3 text-md hover:blue-gradient-dark hover:text-white  shadow-md drop-shadow-lg  shadow-yellow-700 hover:shadow-gray-100 cursor-pointer ">
 								Get started

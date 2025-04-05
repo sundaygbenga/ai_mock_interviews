@@ -6,11 +6,15 @@ import { vapi } from "@/lib/vapi.sdk";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { LuPhoneCall, LuPhoneOff } from "react-icons/lu";
+import { BsRepeat } from "react-icons/bs";
+import Spinner3 from "./Spinner3";
 
 enum CallStatus {
 	INACTIVE = "INACTIVE",
 	CONNECTING = "CONNECTING",
 	ACTIVE = "ACTIVE",
+	RESTARTING = "RESTARTING",
 	FINISHED = "FINISHED",
 }
 
@@ -31,6 +35,7 @@ const Agent = ({
 	const [isSpeaking, setIsSpeaking] = useState(false);
 	const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
 	const [messages, setMessages] = useState<SavedMessage[]>([]);
+	const [lastMessage, setLastMessage] = useState<string>("");
 
 	useEffect(() => {
 		const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
@@ -66,26 +71,29 @@ const Agent = ({
 		};
 	}, []);
 
-	const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-		console.log("Generate feedback here.");
-
-		// TODO: Create a server action that generates feedback
-		const { success, feedbackId: id } = await createFeedback({
-			interviewId: interviewId!,
-			interviewRole: interviewRole!,
-			userId: userId!,
-			transcript: messages,
-		});
-
-		if (success && id) {
-			router.push(`/interview/${interviewId}/feedback`);
-		} else {
-			console.log("Error saving feedback");
-			router.push("/");
-		}
-	};
-
 	useEffect(() => {
+		if (messages.length > 0) {
+			setLastMessage(messages[messages.length - 1].content);
+		}
+		const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+			console.log("Generate feedback here.");
+
+			// TODO: Create a server action that generates feedback
+			const { success, feedbackId: id } = await createFeedback({
+				interviewId: interviewId!,
+				interviewRole: interviewRole!,
+				userId: userId!,
+				transcript: messages,
+			});
+
+			if (success && id) {
+				router.push(`/interview/${interviewId}/feedback`);
+			} else {
+				console.log("Error saving feedback");
+				router.push("/");
+			}
+		};
+
 		if (callStatus === CallStatus.FINISHED) {
 			if (type === "generate") {
 				router.push("/");
@@ -94,7 +102,7 @@ const Agent = ({
 			}
 		}
 		// if (callStatus === CallStatus.FINISHED) router.push("/");
-	}, [messages, callStatus, type, userId]);
+	}, [messages, callStatus, type, userId, router, interviewId, interviewRole]);
 
 	const handleCall = async () => {
 		setCallStatus(CallStatus.CONNECTING);
@@ -125,12 +133,45 @@ const Agent = ({
 		vapi.stop();
 	};
 
-	const latestMessage = messages[messages.length - 1]?.content;
+	const handleRestartCall = async () => {
+		if (callStatus === CallStatus.ACTIVE) {
+			setCallStatus(CallStatus.CONNECTING);
+			vapi.stop();
+
+			if (type === "generate") {
+				await vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID!, {
+					variableValues: {
+						username: userName,
+						userid: userId,
+					},
+				});
+			} else {
+				let formattedQuestions = "";
+				if (questions) {
+					formattedQuestions = questions
+						.map((question) => `- ${question}`)
+						.join("\n");
+				}
+				await vapi.start(interviewer, {
+					variableValues: {
+						questions: formattedQuestions,
+					},
+				});
+			}
+		}
+
+		// setCallStatus(CallStatus.FINISHED);
+		// vapi.stop();
+		// vapi.
+	};
+
+	// const latestMessage = messages[messages.length - 1]?.content;
+
 	const isCallInactiveOrFinished =
 		callStatus === CallStatus.INACTIVE || callStatus === CallStatus.FINISHED;
 
 	return (
-		<>
+		<div className="flex flex-col gap-10 items-center justify-center w-full h-full mt-5">
 			<div className="call-view">
 				<div className="card-interviewer">
 					<div className="avatar">
@@ -163,36 +204,68 @@ const Agent = ({
 				<div className="transcript-border">
 					<div className="transcript">
 						<p
-							key={latestMessage}
+							key={lastMessage}
 							className={cn(
 								"transition-opacity duration-500 opacity-0",
 								"animate-fadeIn opacity-100"
 							)}
 						>
-							{latestMessage}
+							{lastMessage}
 						</p>
 					</div>
 				</div>
 			)}
 
-			<div className="w-full flex justify-center mt-5">
+			<div className="w-full flex gap-4 items-center justify-center">
+				{callStatus === "ACTIVE" && (
+					<button
+						className="btn-restart disabled:cursor-not-allowed"
+						disabled
+						onClick={handleRestartCall}
+					>
+						<BsRepeat
+							size={28}
+							className=" animate-pulse disabled:animate-none  place-self-center"
+						/>
+					</button>
+				)}
 				{callStatus !== "ACTIVE" ? (
-					<button className="relative btn-call" onClick={handleCall}>
+					<button className="relative btn-call " onClick={handleCall}>
 						<span
 							className={cn(
 								"absolute animate-ping rounded-full opacity-75 ",
-								callStatus !== "CONNECTING" && "hidden"
+								callStatus === "CONNECTING" && "hidden"
 							)}
 						/>
-						<span>{isCallInactiveOrFinished ? "Call" : "..."}</span>
+						<span className="flex items-center gap-1 text-lg w-full">
+							{isCallInactiveOrFinished ? (
+								"Call"
+							) : (
+								<span className="">
+									<Spinner3 />
+								</span>
+							)}
+							{isCallInactiveOrFinished && (
+								<LuPhoneCall
+									size={22}
+									className=" animate-pulse rotate-[255deg]"
+								/>
+							)}
+						</span>
 					</button>
 				) : (
 					<button className="btn-disconnect" onClick={handleDisconnect}>
-						End
+						<span className="flex items-center gap-1 text-lg">
+							{"End"}
+							<LuPhoneOff
+								size={22}
+								className=" animate-pulse rotate-[255deg]"
+							/>
+						</span>
 					</button>
 				)}
 			</div>
-		</>
+		</div>
 	);
 };
 
